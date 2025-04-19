@@ -4,7 +4,7 @@
 
 vim.opt.autoindent = true
 vim.opt.list = false -- show whitespace characters
-vim.opt.winbar = "%=%m %f"
+--vim.opt.winbar = "%=%m %f"
 vim.opt.wrap = false
 
 -- Only enable clipboard if xclip is available and DISPLAY is set (X11 session)
@@ -24,16 +24,31 @@ local function get_winbar(is_active)
   return "%=%#" .. hl .. "#%f %m"
 end
 
+-- Function to check if current buffer is a mini.files buffer
+local function is_mini_files()
+  local bufname = vim.api.nvim_buf_get_name(0)
+  return bufname:match("^minifiles://") ~= nil
+end
+
 -- Active window gets vibrant yellow
 vim.api.nvim_create_autocmd({ "WinEnter", "BufEnter" }, {
   callback = function()
-    vim.wo.winbar = get_winbar(true)
+    -- Skip mini.files buffers
+    if not is_mini_files() then
+      vim.wo.winbar = get_winbar(true)
+    else
+      -- Clear winbar for mini.files
+      vim.wo.winbar = ""
+    end
   end,
 })
 
 -- Inactive window gets subtle gray
 vim.api.nvim_create_autocmd("WinLeave", {
   callback = function()
-    vim.wo.winbar = get_winbar(false)
+    -- Skip mini.files buffers
+    if not is_mini_files() then
+      vim.wo.winbar = get_winbar(false)
+    end
   end,
 })
