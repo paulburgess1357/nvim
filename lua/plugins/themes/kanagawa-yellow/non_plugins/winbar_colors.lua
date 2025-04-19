@@ -2,7 +2,7 @@
 local M = {}
 
 -- Define theme colors
-M.active = "#dca561" -- WaveYellow for active windows
+M.active = "#ffa94d" -- WaveYellow for active windows
 M.inactive = "#727169" -- FujiGray for inactive windows
 
 return M
