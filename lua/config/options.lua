@@ -13,3 +13,27 @@ if vim.fn.executable("xclip") == 1 and vim.env.DISPLAY then
 else
   vim.opt.clipboard = ""
 end
+
+-- Kanagawa-like highlights
+vim.api.nvim_set_hl(0, "WinBarActive", { fg = "#dca561", bold = true }) -- WaveYellow (bold)
+vim.api.nvim_set_hl(0, "WinBarInactive", { fg = "#727169", bold = false }) -- FujiGray
+
+-- Function to return styled winbar text
+local function get_winbar(is_active)
+  local hl = is_active and "WinBarActive" or "WinBarInactive"
+  return "%=%#" .. hl .. "#%f %m"
+end
+
+-- Active window gets vibrant yellow
+vim.api.nvim_create_autocmd({ "WinEnter", "BufEnter" }, {
+  callback = function()
+    vim.wo.winbar = get_winbar(true)
+  end,
+})
+
+-- Inactive window gets subtle gray
+vim.api.nvim_create_autocmd("WinLeave", {
+  callback = function()
+    vim.wo.winbar = get_winbar(false)
+  end,
+})
